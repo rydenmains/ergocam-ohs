@@ -4,9 +4,9 @@
 
 Developed as a final project for the K3 (Occupational Health and Safety) course. No additional hardware required - only a standard webcam.
 
-![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0071e3?style=flat-square)
-![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-1a7a37?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-b0b0b7?style=flat-square)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0071e3?style=flat-square)](https://www.microsoft.com/windows)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-1a7a37?style=flat-square)](https://www.python.org)
+[![License](https://img.shields.io/badge/license-MIT-b0b0b7?style=flat-square)](https://opensource.org/licenses/MIT)
 
 ---
 
