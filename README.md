@@ -31,6 +31,21 @@ Both metrics are updated at up to 30 FPS and logged automatically to CSV and XLS
 
 ---
 
+## System Requirements
+
+| Component | Minimum |
+|---|---|
+| OS | Windows 10/11 (64-bit) |
+| CPU | Intel Core i5 8th Gen / AMD Ryzen 5 3000 series or equivalent |
+| RAM | 4GB |
+| Storage | 600MB free space (dependencies + model) |
+| Webcam | 720p (built-in or USB) |
+| GPU | Not required |
+
+> **Note on FPS:** ErgoCam targets 30 FPS but performs reliably at lower frame rates. Detection accuracy and smoothness are not affected by FPS as long as the application runs without freezing. Performance depends on CPU load from other applications.
+
+---
+
 ## Quick Start
 
 > **Requires Python 3.10, 3.11, or 3.12.** Python 3.13 is not yet supported by mediapipe.
