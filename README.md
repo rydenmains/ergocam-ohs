@@ -50,10 +50,10 @@ Subsequent launches start immediately without a command window.
 
 ## Usage
 
-### Auto-Calibration
-Upon starting a session, ErgoCam automatically calibrates within 3 seconds of detecting a stable face. Ensure your shoulders are visible in the camera frame before calibration completes. The current posture reading will remain neutral until calibration is done.
+### Calibration
+When a session starts, ErgoCam automatically calibrates within 3 seconds of detecting a stable face. Ensure your shoulders are visible in the camera frame and sit upright before calibration completes. Posture readings remain neutral until calibration is done.
 
-Manual recalibration is available at any time by pressing **C** or clicking **Kalibrasi (C)**.
+Manual recalibration is recommended whenever you change your sitting position, adjust the camera, or feel the readings are inaccurate. Press **C** or click **Kalibrasi (C)** to recalibrate at any time.
 
 ### Status Tiers
 
