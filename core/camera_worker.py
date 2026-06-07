@@ -27,6 +27,7 @@ class CameraWorker(QThread):
     fps_updated    = Signal(float)                # EMA fps
     face_lost      = Signal()                     # wajah tidak terdeteksi
     calibrated     = Signal(bool)                 # hasil kalibrasi (True/False)
+    countdown_tick = Signal(int)                  # 3, 2, 1, 0 (0 = done)
 
     def __init__(self, camera_index: int = 0, bg_mode: bool = False, parent=None):
         super().__init__(parent)
@@ -41,6 +42,11 @@ class CameraWorker(QThread):
         self._ema_alpha   = 0.15                  # smoothing factor
         # Windowed frame count (1 detik)
         self._frame_times: deque = deque()
+
+        # Auto-calibration state
+        self._stable_since: float = 0.0           # monotonic time wajah pertama stabil
+        self._countdown_emitted: int = -1         # countdown terakhir yang di-emit
+        self._auto_calibrated: bool = False       # sudah auto-kalibrasi?
 
     # ── Public ────────────────────────────────────────────────
 
@@ -80,10 +86,34 @@ class CameraWorker(QThread):
             if self._cal_flag:
                 self._cal_flag = False
                 success = self._detector.calibrate(frame_rgb)
+                if success:
+                    self._auto_calibrated = True
                 self.calibrated.emit(success)
 
             # ── Deteksi ──────────────────────────────────────
             result = self._detector.process(frame_rgb, bg_mode=self.bg_mode)
+
+            # ── Auto-kalibrasi countdown ─────────────────────
+            if not self._auto_calibrated:
+                if result.face_detected:
+                    now = time.monotonic()
+                    if self._stable_since == 0.0:
+                        self._stable_since = now
+                    elapsed = now - self._stable_since
+                    remaining = max(0, 3 - int(elapsed))
+                    if remaining != self._countdown_emitted:
+                        self._countdown_emitted = remaining
+                        self.countdown_tick.emit(remaining)
+                    if elapsed >= 3.0:
+                        success = self._detector.calibrate(frame_rgb)
+                        if success:
+                            self._auto_calibrated = True
+                            self.calibrated.emit(True)
+                            self.countdown_tick.emit(0)
+                else:
+                    # Reset countdown kalau wajah hilang sebelum selesai
+                    self._stable_since = 0.0
+                    self._countdown_emitted = -1
 
             # ── Emit frame + result ──────────────────────────
             if not self.bg_mode:
@@ -99,7 +129,7 @@ class CameraWorker(QThread):
             while self._frame_times and (now - self._frame_times[0]) > 1.0:
                 self._frame_times.popleft()
             # Emit tiap 0.5 detik
-            if now - last_emit_fps >= 0.5:
+            if now - last_emit_fps >= 1.5:
                 fps_raw  = len(self._frame_times)
                 self._ema_fps = (self._ema_alpha * fps_raw
                                  + (1 - self._ema_alpha) * self._ema_fps)

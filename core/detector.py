@@ -135,7 +135,7 @@ class Detector:
 
     def _slouch_tier(self, ratio: float, bg_mode: bool) -> str:
         if self.baseline_ratio is None:
-            return "ok" if ratio > 0.7 else "alert"
+            return "idle"
         drop_thresh = config.SLOUCH_DROP_BG if bg_mode else config.SLOUCH_DROP_CAM
         drop = (self.baseline_ratio - ratio) / max(self.baseline_ratio, 1e-6)
         if drop < drop_thresh * 0.5:   return "ok"

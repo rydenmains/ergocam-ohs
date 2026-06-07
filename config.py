@@ -52,14 +52,14 @@ BLACK     = "#000000"   # latar feed kamera
 # ── Teks status ───────────────────────────────────────────────
 STATUS_TEXT = {
     "proximity": {
-        "idle":    "—",
+        "idle":    "-",
         "ok":      "Aman",
         "caution": "Agak dekat",
         "warn":    "Dekat",
         "alert":   "Berbahaya",
     },
     "slouch": {
-        "idle":    "—",
+        "idle":    "-",
         "ok":      "Tegak",
         "caution": "Agak bungkuk",
         "warn":    "Bungkuk",

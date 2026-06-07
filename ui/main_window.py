@@ -1,5 +1,5 @@
 """
-ErgoCam v3.0 — ui/main_window.py
+ErgoCam v3.0 - ui/main_window.py
 MainWindow PySide6 dengan Apple light design system.
 
 Optimasi UI:
@@ -164,7 +164,7 @@ class BreakOverlay(QWidget):
         self._countdown.setAlignment(Qt.AlignCenter)
         self._countdown.setStyleSheet(f"color:{config.AZURE}; font-size:56px; font-weight:300; letter-spacing:-2px;")
 
-        sub = QLabel("Jauh dari layar — regangkan leher & punggung Anda.")
+        sub = QLabel("Jauh dari layar - regangkan leher & punggung Anda.")
         sub.setAlignment(Qt.AlignCenter)
         sub.setStyleSheet(f"color:#aeaeb2; font-size:14px;")
 
@@ -225,7 +225,7 @@ class MainWindow(QMainWindow):
         # Dirty-check cache: label_id → (text, color)
         self._label_cache: Dict[str, Tuple[str, str]] = {}
 
-        # SESI timer — self-correcting 200ms tick
+        # SESI timer - self-correcting 200ms tick
         self._sesi_timer = QTimer(self)
         self._sesi_timer.setInterval(200)
         self._sesi_timer.timeout.connect(self._tick_sesi)
@@ -264,7 +264,7 @@ class MainWindow(QMainWindow):
         self._stack.addWidget(self._page_home)
         self._stack.addWidget(self._page_live)
 
-        # Break overlay — full-size child of centralWidget
+        # Break overlay - full-size child of centralWidget
         self._break_overlay = BreakOverlay(root)
         self._break_overlay.hide()
         self._break_overlay.dismissed.connect(self._end_break)
@@ -305,8 +305,8 @@ class MainWindow(QMainWindow):
         vl.addStretch()
 
         # FPS indicator
-        self._fps_lbl = QLabel("FPS —")
-        self._fps_lbl.setStyleSheet(f"color:{config.GRAPHITE}; font-size:11px;")
+        self._fps_lbl = QLabel("FPS -")
+        self._fps_lbl.setStyleSheet(f"color:{config.GRAPHITE}; font-size:11px; background:transparent;")
         self._fps_lbl.setObjectName("stat_key")
         vl.addWidget(self._fps_lbl)
 
@@ -370,7 +370,7 @@ class MainWindow(QMainWindow):
         )
         bg_card = self._mode_card(
             "Mode Background",
-            "Jalankan di latar belakang — notifikasi sistem saja.",
+            "Jalankan di latar belakang - notifikasi sistem saja.",
             primary=False,
         )
 
@@ -443,13 +443,13 @@ class MainWindow(QMainWindow):
 
         # Stats bar
         stats_frame = QFrame()
-        stats_frame.setObjectName("card")
+        stats_frame.setStyleSheet("background: transparent; border: none;")
         stats_h = QHBoxLayout(stats_frame)
         stats_h.setContentsMargins(20, 12, 20, 12)
         stats_h.setSpacing(0)
 
-        self._prox_val, prox_block   = self._stat_block("JARAK",  "—", 124)
-        self._slouch_val, sl_block   = self._stat_block("POSTUR", "—", 140)
+        self._prox_val, prox_block   = self._stat_block("JARAK",  "-", 124)
+        self._slouch_val, sl_block   = self._stat_block("POSTUR", "-", 140)
         self._sesi_val, sesi_block   = self._stat_block("SESI",   "00:00:00", 80)
 
         for block in (prox_block, sl_block, sesi_block):
@@ -474,6 +474,29 @@ class MainWindow(QMainWindow):
         ctrl.addWidget(self._stop_btn)
         vl.addLayout(ctrl)
 
+        # Calibration hint overlay (floating di atas feed)
+        self._cal_hint = QFrame(page)
+        self._cal_hint.setAttribute(Qt.WA_StyledBackground, True)
+        self._cal_hint.setStyleSheet("""
+            QFrame {
+                background-color: rgba(29,29,31,0.82);
+                border-radius: 12px;
+            }
+        """)
+        cal_vl = QVBoxLayout(self._cal_hint)
+        cal_vl.setContentsMargins(20, 16, 20, 16)
+        cal_vl.setSpacing(6)
+        self._cal_hint_title = QLabel("Pastikan bahu terlihat di kamera")
+        self._cal_hint_title.setAlignment(Qt.AlignCenter)
+        self._cal_hint_title.setStyleSheet("color:#ffffff; font-size:14px; font-weight:600; background:transparent;")
+        self._cal_hint_sub = QLabel("Kalibrasi otomatis dalam 3 detik...")
+        self._cal_hint_sub.setAlignment(Qt.AlignCenter)
+        self._cal_hint_sub.setStyleSheet(f"color:{config.AZURE}; font-size:22px; font-weight:300; background:transparent;")
+        cal_vl.addWidget(self._cal_hint_title)
+        cal_vl.addWidget(self._cal_hint_sub)
+        self._cal_hint.adjustSize()
+        self._cal_hint.hide()
+
         # Toast (floating, parented to page)
         self._toast = QFrame(page)
         self._toast.setAttribute(Qt.WA_StyledBackground, True)
@@ -496,6 +519,7 @@ class MainWindow(QMainWindow):
 
     def _stat_block(self, key: str, val: str, val_width: int):
         frame = QWidget()
+        frame.setStyleSheet("background: transparent;")
         vl = QVBoxLayout(frame)
         vl.setContentsMargins(12, 0, 12, 0)
         vl.setSpacing(2)
@@ -504,11 +528,13 @@ class MainWindow(QMainWindow):
         key_lbl = QLabel(key)
         key_lbl.setObjectName("stat_key")
         key_lbl.setAlignment(Qt.AlignCenter)
+        key_lbl.setStyleSheet(f"color:#3a3a3c; font-size:11px; font-weight:600; letter-spacing:0.8px; background:transparent;")
 
         val_lbl = QLabel(val)
         val_lbl.setObjectName("stat_val")
         val_lbl.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         val_lbl.setFixedWidth(val_width)
+        val_lbl.setStyleSheet(f"color:{config.INK}; font-size:15px; font-weight:700; background:transparent;")
 
         vl.addWidget(key_lbl)
         vl.addWidget(val_lbl)
@@ -525,7 +551,9 @@ class MainWindow(QMainWindow):
         self._worker.result_ready.connect(self._on_result)
         self._worker.fps_updated.connect(self._on_fps)
         self._worker.calibrated.connect(self._on_calibrated)
+        self._worker.countdown_tick.connect(self._on_countdown)
         self._worker.start()
+        self._show_calibration_hint(3)
 
         self._label_cache.clear()
         self._sesi_timer.start()
@@ -558,9 +586,26 @@ class MainWindow(QMainWindow):
 
     def _on_calibrated(self, success: bool):
         if success:
-            self._show_toast("Kalibrasi berhasil — baseline postur diperbarui.")
+            self._cal_hint.hide()
+            self._show_toast("Kalibrasi berhasil - baseline postur diperbarui.")
         else:
-            self._show_toast("Kalibrasi gagal — wajah tidak terdeteksi, coba lagi.")
+            self._show_toast("Kalibrasi gagal - wajah tidak terdeteksi, coba lagi.")
+
+    def _on_countdown(self, remaining: int):
+        if remaining == 0:
+            self._cal_hint.hide()
+            return
+        self._show_calibration_hint(remaining)
+
+    def _show_calibration_hint(self, remaining: int):
+        if remaining > 0:
+            self._cal_hint_sub.setText(f"Kalibrasi otomatis dalam {remaining} detik...")
+        self._cal_hint.adjustSize()
+        page = self._page_live
+        x = (page.width() - self._cal_hint.width()) // 2
+        self._cal_hint.move(x, 16)
+        self._cal_hint.show()
+        self._cal_hint.raise_()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_C:
@@ -581,8 +626,8 @@ class MainWindow(QMainWindow):
         if self._session:
             self._session.log_event(result.proximity_status, result.slouch_status)
 
-        prox_text  = config.STATUS_TEXT["proximity"].get(result.proximity_status, "—")
-        sl_text    = config.STATUS_TEXT["slouch"].get(result.slouch_status, "—")
+        prox_text  = config.STATUS_TEXT["proximity"].get(result.proximity_status, "-")
+        sl_text    = config.STATUS_TEXT["slouch"].get(result.slouch_status, "-")
         prox_color = config.status_color(result.proximity_status)
         sl_color   = config.status_color(result.slouch_status)
 
