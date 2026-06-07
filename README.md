@@ -27,7 +27,7 @@ Both metrics update at up to 30 FPS and are logged per session to CSV + XLSX.
 
 | Home | Live Session |
 |---|---|
-| ![Home](docs/home.png) | ![Live](docs/live.png) |
+| ![Home](main_screen.png) | ![Live](akuergo.png) |
 
 ---
 
